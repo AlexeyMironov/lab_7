@@ -2,7 +2,7 @@
 
 template <typename T, typename Comp = std::less<T>>
 
-bool FindMax(std::vector<T> const& arr, T &maxValue, Comp const& comp = std::less<T>())
+bool FindMax(std::vector<T> const& arr, T &maxValue, Comp const& comp = Comp())  //std::less<T>()
 {
 	if (arr.empty())
 	{

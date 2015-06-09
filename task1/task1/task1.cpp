@@ -10,38 +10,65 @@ using namespace std;
 struct Sportsman
 {
 	string name;
-	int height; 
-	int weight;
+	unsigned height;
+	unsigned weight;
 };
 
 
-int _tmain(int /*argc*/, _TCHAR* /*argv*/[])
+BOOST_AUTO_TEST_CASE(TestEmptyVector)
 {
-	vector<int> a = { 1, 4, -2, 0, 12, -6 };
+	int max = 1;
+	BOOST_CHECK(!FindMax(vector<int>(), max));
+	BOOST_CHECK_EQUAL(max, 1);
+}
+
+BOOST_AUTO_TEST_CASE(FindMaxValueInIntVector)
+{
 	int max;
-	assert(FindMax(a, max));
-	assert(max == 12);
+	BOOST_CHECK(FindMax(vector<int>{ -2, 1, 6, 0, 9, -1 }, max));
+	BOOST_CHECK_EQUAL(max, 9);
+}
 
-	vector<string> strings = { "cat", "dog", "apple", "cow" };
-	string maxString;
-	assert(FindMax(strings, maxString));
-	assert(maxString == "dog");
+BOOST_AUTO_TEST_CASE(FindMinValueInIntVector)
+{
+	int min;
+	BOOST_CHECK(FindMax(vector<int>{ 9, 0, -2, 6, 4, 8 }, min,
+		[](int const& a, int const& b){ return a > b; }));
 
+	BOOST_CHECK_EQUAL(min, -2);
+}
 
-	vector<Sportsman> sportsmans = {
-		{ "Ivan Petrov", 100, 150 },
-		{ "Eugene Dolgushev", 87, 188 },
-		{ "Vladimir Alitov", 62, 175 },
+BOOST_AUTO_TEST_CASE(FindTheHighestSportsmen)
+{
+	vector<Sportsman> const& sportsmen = {
+		{ "Kolya", 190, 75 },
+		{ "Dima", 185, 80 },
+		{ "Sasha", 180, 95 }
 	};
-	Sportsman tallestSportsman;
-	assert(FindMax(sportsmans, tallestSportsman, [](Sportsman const& a, Sportsman const& b){
-		return a.height < b.height;		
-	}));
-	assert(tallestSportsman.name == "Eugene Dolgushev");
-	Sportsman lightestSportsman;
-	assert(FindMax(sportsmans, lightestSportsman, [](Sportsman const& a, Sportsman const& b){
-		return a.weight > b.weight;
-	}));
-	assert(lightestSportsman.name == "Vladimir Alitov");
-	return 0;
+
+	{
+		Sportsman tallestSportsman;
+
+		BOOST_CHECK(FindMax(sportsmen, tallestSportsman,
+			[](Sportsman const& a, Sportsman const& b){ return a.height < b.height; }));
+
+		BOOST_CHECK_EQUAL(tallestSportsman.name, "Kolya");
+	}
+}
+BOOST_AUTO_TEST_CASE(FindTheHeavySportsmen)
+{
+	vector<Sportsman> const& sportsmen = {
+		{ "Serezha", 190, 85 },
+		{ "Andrey", 195, 100 },
+		{ "Igor", 180, 90 }
+	};
+
+	{
+		Sportsman heaviestSportsman;
+
+		BOOST_CHECK(FindMax(sportsmen, heaviestSportsman,
+			[](Sportsman const& a, Sportsman const& b){ return a.weight < b.weight; }));
+
+		BOOST_CHECK_EQUAL(heaviestSportsman.name, "Andrey");
+	}
 }
